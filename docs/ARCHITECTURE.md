@@ -1,15 +1,15 @@
 # Architecture
 
-## Current State (Phase 1)
+## Current State (Phase 2)
 
-Only the project skeleton is implemented. The layers below represent the
-target architecture; components marked `(Phase N+)` are not yet built.
+The bot layer is now implemented. The layers below represent the full target
+architecture; components marked `(Phase N+)` are not yet built.
 
 ## Target Layers
 
 ```
 ┌─────────────────────────────────────┐
-│           Telegram Interface         │  ← Phase 2+
+│           Telegram Interface         │  ← Phase 2 ✅
 │        (python-telegram-bot)         │
 └────────────────┬────────────────────┘
                  │
@@ -29,14 +29,22 @@ target architecture; components marked `(Phase N+)` are not yet built.
 └────────────────────────────────────┘
 ```
 
+## Phase 2 — Implemented Components
+
+| Module | Responsibility |
+|---|---|
+| `src/bot/__init__.py` | Bot sub-package |
+| `src/bot/handlers.py` | `/start`, `/help`, `/ping` async command handlers |
+| `src/bot/application.py` | `build_application(token)` — creates and wires the PTB Application |
+| `src/app.py` | Bootstrap: logging → config validation → build app → polling |
+| `src/main.py` | Executable entrypoint |
+
 ## Phase 1 — Implemented Components
 
 | Module | Responsibility |
 |---|---|
 | `src/config.py` | Loads env vars; exposes typed `Config` dataclass |
 | `src/logging_setup.py` | Configures root logger with console handler |
-| `src/app.py` | Bootstrap: loads config, sets up logging, prints startup banner |
-| `src/main.py` | Executable entrypoint — calls `create_app()` |
 | `src/version.py` | Single source of truth for version string |
 
 ## Component Responsibilities (Target)

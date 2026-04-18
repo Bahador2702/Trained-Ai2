@@ -1,12 +1,14 @@
 """
 Application bootstrap.
 
-Initialises configuration and logging, then performs a startup health check.
-The real Telegram bot handlers will be wired here in Phase 2.
+Initialises configuration and logging, then starts the Telegram bot
+in polling mode.  In future phases, additional subsystems (LLM, retrieval,
+vision) will be initialised here before polling begins.
 """
 
 import logging
 
+from src.bot.application import build_application
 from src.config import config
 from src.logging_setup import setup_logging
 from src.version import __version__
@@ -23,25 +25,28 @@ _BANNER = f"""
 
 def create_app() -> None:
     """
-    Bootstrap the application.
+    Bootstrap and run the application.
 
     1. Set up logging.
     2. Print startup banner.
-    3. Log a redacted config summary.
-    4. Confirm skeleton is wired correctly.
-
-    Does NOT start the Telegram bot (Phase 2+).
+    3. Validate required configuration.
+    4. Build the Telegram Application.
+    5. Start polling (blocking — runs until interrupted).
     """
     setup_logging(config.log_level)
 
     print(_BANNER)
-    log.info("Trained-Ai2 skeleton initialized successfully.")
+    log.info("Trained-Ai2 v%s starting up.", __version__)
     log.info("Environment: %s | Debug: %s", config.app_env, config.debug)
 
-    summary = config.summary()
-    log.info("Config summary:")
-    for key, value in summary.items():
-        log.info("  %-25s %s", key, value)
+    for key, value in config.summary().items():
+        log.debug("  config.%-22s = %s", key, value)
 
-    log.info("Telegram bot: NOT started (Phase 2)")
-    log.info("Startup complete. Exiting cleanly.")
+    # Validate required secret — raises RuntimeError clearly if not set.
+    token = config.require_telegram_token()
+
+    log.info("Building Telegram application...")
+    application = build_application(token)
+
+    log.info("Starting polling. Press Ctrl+C to stop.")
+    application.run_polling(drop_pending_updates=True)

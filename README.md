@@ -5,16 +5,24 @@ with LLM, vision, and embedding capabilities.
 
 ## Project Status
 
-> **Phase 1 — Application Skeleton** ✅
+> **Phase 2 — Core Bot Shell** ✅
 
-The repository now contains a minimal, runnable Python project skeleton.
-The Telegram bot is **not yet implemented** (Phase 2).
+The bot is now live and responds to basic commands via Telegram polling.
+LLM and tutor features are **not yet implemented** (Phase 3+).
 
 ## Overview
 
 Trained-Ai2 is a multi-phase AI agent project designed to be deployed as a
 Telegram bot. Each phase adds functionality incrementally, following strict
 scaffolding and testing discipline.
+
+## Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `/start` | Introduction and current development status |
+| `/help`  | List available commands |
+| `/ping`  | Confirm the bot is online |
 
 ## Phases
 
@@ -40,22 +48,26 @@ pip install -r requirements.txt
 
 # 4. Set up environment variables
 cp .env.example .env
-# Edit .env and fill in your values (Telegram token, API key, etc.)
+# Edit .env — set TELEGRAM_BOT_TOKEN at minimum
 
-# 5. Run the application skeleton
+# 5. Run the bot
 python src/main.py
 ```
 
-Expected output:
+Expected startup output:
 ```
 ╔══════════════════════════════════════════╗
 ║        Trained-Ai2  v0.1.0               ║
 ║        AI Telegram Tutor Bot             ║
 ╚══════════════════════════════════════════╝
 
-... INFO  Trained-Ai2 skeleton initialized successfully.
-... INFO  Startup complete. Exiting cleanly.
+INFO  Trained-Ai2 v0.1.0 starting up.
+INFO  Building Telegram application...
+INFO  Registered handlers: /start, /help, /ping
+INFO  Starting polling. Press Ctrl+C to stop.
 ```
+
+The bot will then be live on Telegram. Stop with `Ctrl+C`.
 
 ## License
 

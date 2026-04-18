@@ -17,15 +17,15 @@ This document tracks the planned phases of the Trained-Ai2 project.
 - Centralized logging setup
 - Application bootstrap (`src/app.py`) and entrypoint (`src/main.py`)
 - Startup banner and redacted config summary
-- Updated documentation to reflect executable state
 
 ---
 
-## Phase 2 — Core Bot Shell
-- Set up `python-telegram-bot`
-- Implement basic command handlers (`/start`, `/help`)
-- Wire Telegram bot into `src/app.py`
-- Basic error handling and graceful shutdown
+## Phase 2 — Core Bot Shell ✅
+- Added `python-telegram-bot==20.7` dependency
+- Created `src/bot/` package with modular structure
+- Implemented `/start`, `/help`, `/ping` command handlers
+- Integrated Telegram polling into `src/app.py`
+- Clear startup logging and missing-token error
 
 ---
 

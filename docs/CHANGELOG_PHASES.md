@@ -2,6 +2,43 @@
 
 ---
 
+## Phase 2 — Core Bot Shell
+
+**Date**: 2026-04-18
+**Status**: ✅ Complete
+
+### Phase 1 Issues Fixed
+- `src/app.py` Phase 1 stub log line `"Telegram bot: NOT started (Phase 2)"` removed;
+  replaced with real bot bootstrap and polling call.
+- `PHASES.md` Phase 2 entry was missing `/ping` and used imprecise scope language;
+  updated to match actual implementation.
+
+### Changes
+- Created `src/bot/__init__.py` — bot sub-package
+- Created `src/bot/handlers.py` — three async command handlers:
+  - `cmd_start`: introduces the bot and states current phase
+  - `cmd_help`: lists available commands
+  - `cmd_ping`: confirms the bot is alive
+- Created `src/bot/application.py` — `build_application(token)` factory;
+  builds PTB `Application`, registers all three handlers
+- Updated `src/app.py` — now calls `config.require_telegram_token()`,
+  `build_application()`, and `application.run_polling()`; config summary
+  demoted to DEBUG level
+- Updated `requirements.txt` — added `python-telegram-bot==20.7`
+- Updated `PHASES.md` — Phase 2 marked ✅
+- Updated `README.md` — status, command table, updated expected output
+- Updated `docs/ARCHITECTURE.md` — Phase 2 component table; Telegram layer
+  marked ✅
+- Updated `docs/REPOSITORY_STRUCTURE.md` — `src/bot/` fully annotated
+- Updated `docs/TESTING.md` — Phase 2 testing notes
+
+### Notes
+- Polling mode only; webhook deployment deferred to Phase 6
+- No LLM, tutor, quiz, or retrieval logic in this phase
+- Bot requires a valid `TELEGRAM_BOT_TOKEN` in `.env` to run
+
+---
+
 ## Phase 1 — Application Skeleton
 
 **Date**: 2026-04-18
@@ -21,23 +58,15 @@
   `require_*()` helpers for Phase 2 validation
 - Created `src/logging_setup.py` — `setup_logging()` configures root logger
   with timestamped console output; respects `LOG_LEVEL` env var
-- Created `src/app.py` — `create_app()` bootstrap: sets up logging, prints
-  ASCII banner, logs redacted config summary, exits cleanly
-- Created `src/main.py` — executable entrypoint; calls `create_app()`
+- Created `src/app.py` — `create_app()` bootstrap
+- Created `src/main.py` — executable entrypoint
 - Updated `src/__init__.py` — added package docstring
-- Updated `requirements.txt` — trimmed to `python-dotenv==1.0.0` only
-  (`python-telegram-bot` deferred to Phase 2)
+- Updated `requirements.txt` — `python-dotenv==1.0.0`
 - Updated `.env.example` — full variable set with inline comments
-- Updated `PHASES.md` — Phase 1 marked ✅; Phase 2 renamed to "Core Bot Shell"
-- Updated `README.md` — new Getting Started with venv, install, and run steps;
-  includes expected console output
-- Updated `docs/ARCHITECTURE.md` — Phase 1 component table added
-- Updated `docs/REPOSITORY_STRUCTURE.md` — Phase 1 files annotated
 
 ### Notes
-- Telegram bot NOT implemented in this phase
-- No quiz, retrieval, or tutor logic
-- App starts, prints banner, logs config summary, and exits cleanly
+- No functional bot code in this phase
+- App started, printed banner, and exited cleanly
 
 ---
 
@@ -57,4 +86,3 @@
 
 ### Notes
 - No functional code in this phase
-- All files are scaffolding and documentation only
