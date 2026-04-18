@@ -1,47 +1,50 @@
-# Testing Philosophy
+# Testing Notes
 
-## Principles
+Trained-Ai2 does not yet have an automated test suite.
+This document records manual validation performed at each phase.
 
-- **No fake tests**: Every test must assert real behavior
-- **Phase-gated**: Tests are written before or alongside each feature
-- **Isolated**: Unit tests must not depend on external APIs unless mocked
-- **Readable**: Test names describe behavior, not implementation
+---
 
-## Structure
+## Phase 3 — Stateful Bot Foundation
 
+### Import Validation (automated, sandbox)
 ```
-tests/
-  test_bot.py        # Telegram handler tests (Phase 2+)
-  test_llm.py        # LLM module tests (Phase 3+)
-  test_vision.py     # Vision module tests (Phase 4+)
-  test_memory.py     # Memory and retrieval tests (Phase 5+)
-```
-
-## Running Tests
-
-```bash
-pytest tests/
+✅ src.bot.courses     — COURSES dict, get_course(), course_display_name()
+✅ src.bot.keyboards   — main_menu_keyboard(), course_list_keyboard(), back_to_menu_keyboard()
+✅ src.bot.callbacks   — handle_callback(), KEY_ACTIVE_COURSE
+✅ src.bot.handlers    — cmd_start, cmd_menu, cmd_help, cmd_ping
+✅ src.bot.application — build_application() signature
+✅ src.config          — config.persistence_path present
+✅ Courses count       — 5 courses (signals, circuits, dsp, communications, electromagnetics)
 ```
 
-## Phase 2 — What to Test
+### Manual Testing Checklist (requires live bot token)
+- [ ] Bot starts without error, persistence file created under `data/`
+- [ ] `/start` shows greeting + inline menu
+- [ ] Pressing **📚 انتخاب درس** shows course list
+- [ ] Selecting a course shows confirmation; `/start` now shows that course
+- [ ] Course selection survives bot restart (pickle restored)
+- [ ] **❓ Ask**, **📝 Quiz**, **🔁 Review** show correct placeholder messages
+- [ ] **📊 Progress** shows active course (or "none" if not selected)
+- [ ] **🔙 بازگشت به منو** returns to main menu from all flows
+- [ ] `/menu` command opens main menu with current course reflected
 
-Handlers can be tested by passing mock `Update` and `Context` objects:
+---
 
-```python
-from unittest.mock import AsyncMock, MagicMock
-from src.bot.handlers import cmd_ping
+## Phase 2 — Core Bot Shell
 
-async def test_cmd_ping():
-    update = MagicMock()
-    update.message.reply_text = AsyncMock()
-    await cmd_ping(update, MagicMock())
-    update.message.reply_text.assert_called_once()
-```
+### Validated
+- Bot started and connected to Telegram
+- `/start`, `/help`, `/ping` all responded correctly
+- Missing token path raised a clear RuntimeError
 
-No real Telegram token is needed for unit tests.
+---
 
-## Mocking Policy
+## Phase 1 — Application Skeleton
 
-- Mock all external API calls in unit tests
-- Use real API calls only in integration tests (clearly marked)
-- Never commit tests that require secrets to run
+### Validated (sandbox)
+- All imports resolved correctly
+- Config loaded from environment
+- Logging setup produced clean console output
+- Startup banner printed
+- App exited cleanly when token was not set

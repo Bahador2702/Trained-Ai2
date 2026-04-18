@@ -29,28 +29,41 @@ This document tracks the planned phases of the Trained-Ai2 project.
 
 ---
 
-## Phase 3 — LLM Integration
+## Phase 3 — Stateful Bot Foundation ✅
+- `PicklePersistence` wired for user_data persistence across restarts
+- Inline menu skeleton with five action buttons (Persian UX)
+- Course catalog scaffold: 5 EE courses (signals, circuits, DSP, communications, electromagnetics)
+- Active course selection flow: stored in `user_data`, reflected in `/start` and menus
+- `/menu` command added; `/start` updated to show active course
+- Placeholder responses for: Ask Question, Quiz, Review
+- Modular structure: `courses.py`, `keyboards.py`, `callbacks.py`
+- `PERSISTENCE_PATH` configurable via `DATA_DIR` env var
+- `config.persistence_path` property added
+
+---
+
+## Phase 4 — LLM Integration
 - Connect chat model via API
-- Basic question-answer loop
+- Basic question-answer loop tied to active course
 - Message history context window
 
 ---
 
-## Phase 4 — Vision & Embeddings
+## Phase 5 — Vision & Embeddings
 - Image input handling
 - Embedding model integration
 - Vector store setup
 
 ---
 
-## Phase 5 — Memory & Retrieval
-- Persistent user memory
+## Phase 6 — Memory & Retrieval
+- Persistent user learning memory
 - RAG (Retrieval-Augmented Generation) pipeline
-- Document ingestion
+- Document ingestion and indexing
 
 ---
 
-## Phase 6 — Production Readiness
+## Phase 7 — Production Readiness
 - Error handling and fallbacks
 - Rate limiting
 - Deployment configuration

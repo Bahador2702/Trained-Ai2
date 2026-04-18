@@ -12,24 +12,20 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Load .env from the project root (one level up from src/)
 _ROOT = Path(__file__).parent.parent
 load_dotenv(_ROOT / ".env", override=False)
 
 
 @dataclass
 class Config:
-    # ── Environment ──────────────────────────
     app_env: str = field(default_factory=lambda: os.getenv("APP_ENV", "development"))
     debug: bool = field(default_factory=lambda: os.getenv("DEBUG", "false").lower() == "true")
     log_level: str = field(default_factory=lambda: os.getenv("LOG_LEVEL", "INFO").upper())
 
-    # ── Telegram ─────────────────────────────
     telegram_bot_token: str | None = field(
         default_factory=lambda: os.getenv("TELEGRAM_BOT_TOKEN") or None
     )
 
-    # ── LLM API ──────────────────────────────
     model_api_key: str | None = field(
         default_factory=lambda: os.getenv("MODEL_API_KEY") or None
     )
@@ -37,20 +33,22 @@ class Config:
         default_factory=lambda: os.getenv("MODEL_API_BASE", "https://api.openai.com/v1")
     )
 
-    # ── Models ───────────────────────────────
     chat_model: str = field(default_factory=lambda: os.getenv("CHAT_MODEL", "gpt-4o"))
     vision_model: str = field(default_factory=lambda: os.getenv("VISION_MODEL", "gpt-4o"))
     embedding_model: str = field(
         default_factory=lambda: os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
     )
 
-    # ── Data ─────────────────────────────────
     data_dir: Path = field(
         default_factory=lambda: Path(os.getenv("DATA_DIR", "./data"))
     )
 
+    @property
+    def persistence_path(self) -> Path:
+        """Path to the PicklePersistence file."""
+        return self.data_dir / "bot_persistence.pickle"
+
     def require_telegram_token(self) -> str:
-        """Return telegram_bot_token or raise if missing."""
         if not self.telegram_bot_token:
             raise RuntimeError(
                 "TELEGRAM_BOT_TOKEN is required but not set. "
@@ -59,7 +57,6 @@ class Config:
         return self.telegram_bot_token
 
     def require_model_api_key(self) -> str:
-        """Return model_api_key or raise if missing."""
         if not self.model_api_key:
             raise RuntimeError(
                 "MODEL_API_KEY is required but not set. "
@@ -68,7 +65,6 @@ class Config:
         return self.model_api_key
 
     def summary(self) -> dict:
-        """Return a config summary with sensitive values redacted."""
         return {
             "app_env": self.app_env,
             "debug": self.debug,
@@ -80,8 +76,8 @@ class Config:
             "vision_model": self.vision_model,
             "embedding_model": self.embedding_model,
             "data_dir": str(self.data_dir),
+            "persistence_path": str(self.persistence_path),
         }
 
 
-# Module-level singleton — import this in other modules.
 config = Config()

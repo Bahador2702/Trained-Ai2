@@ -1,56 +1,72 @@
 # Architecture
 
-## Current State (Phase 2)
+## Overview
 
-The bot layer is now implemented. The layers below represent the full target
-architecture; components marked `(Phase N+)` are not yet built.
+Trained-Ai2 is a modular Telegram AI tutor bot built in incremental phases.
+Each phase adds a self-contained layer without breaking previous layers.
 
-## Target Layers
+---
+
+## Current State (Phase 3)
 
 ```
-┌─────────────────────────────────────┐
-│           Telegram Interface         │  ← Phase 2 ✅
-│        (python-telegram-bot)         │
-└────────────────┬────────────────────┘
-                 │
-┌────────────────▼────────────────────┐
-│           Agent Core Layer          │  ← Phase 3+
-│  (intent routing, session, memory)  │
-└────┬──────────────────────┬─────────┘
-     │                      │
-┌────▼──────┐       ┌───────▼────────┐
-│ LLM/Chat  │       │  Vision Model  │  ← Phase 3+
-│  Module   │       │    Module      │
-└────┬──────┘       └───────┬────────┘
-     │                      │
-┌────▼──────────────────────▼────────┐
-│         Embedding + Vector Store   │  ← Phase 4+
-│              (RAG Layer)           │
-└────────────────────────────────────┘
+User (Telegram)
+      │
+      ▼
+python-telegram-bot Application
+      │
+      ├── PicklePersistence  ──────────────── data/bot_persistence.pickle
+      │
+      ├── CommandHandlers
+      │     /start  → cmd_start  (menu + active course)
+      │     /menu   → cmd_menu   (main inline menu)
+      │     /help   → cmd_help
+      │     /ping   → cmd_ping
+      │
+      └── CallbackQueryHandler
+            handle_callback()
+              ├── menu           → main menu
+              ├── choose_course  → course list
+              ├── course:<slug>  → select & persist course
+              ├── ask            → placeholder
+              ├── quiz           → placeholder
+              ├── review         → placeholder
+              └── progress       → show active course
 ```
 
-## Phase 2 — Implemented Components
+---
 
-| Module | Responsibility |
-|---|---|
-| `src/bot/__init__.py` | Bot sub-package |
-| `src/bot/handlers.py` | `/start`, `/help`, `/ping` async command handlers |
-| `src/bot/application.py` | `build_application(token)` — creates and wires the PTB Application |
-| `src/app.py` | Bootstrap: logging → config validation → build app → polling |
-| `src/main.py` | Executable entrypoint |
+## Source Layers
 
-## Phase 1 — Implemented Components
+| Module                     | Responsibility                                   | Phase Added |
+|----------------------------|--------------------------------------------------|-------------|
+| `src/config.py`            | Env-based config, persistence path              | 1           |
+| `src/logging_setup.py`     | Root logger setup                                | 1           |
+| `src/app.py`               | Bootstrap: logging → token → app → polling      | 1           |
+| `src/main.py`              | CLI entrypoint                                   | 1           |
+| `src/bot/handlers.py`      | Command handlers                                 | 2 (upd. 3)  |
+| `src/bot/application.py`   | Application factory, persistence, handler wiring | 2 (upd. 3)  |
+| `src/bot/courses.py`       | Course catalog (slugs, labels)                   | 3           |
+| `src/bot/keyboards.py`     | Inline keyboard builders, callback constants     | 3           |
+| `src/bot/callbacks.py`     | Inline menu router, course selection, state      | 3           |
 
-| Module | Responsibility |
-|---|---|
-| `src/config.py` | Loads env vars; exposes typed `Config` dataclass |
-| `src/logging_setup.py` | Configures root logger with console handler |
-| `src/version.py` | Single source of truth for version string |
+---
 
-## Component Responsibilities (Target)
+## Persistence
 
-- **Telegram Interface**: Receives and dispatches messages/commands
-- **Agent Core**: Routes intent, maintains session state, manages memory
-- **LLM/Chat Module**: Handles text-based AI responses
-- **Vision Module**: Processes image inputs
-- **Embedding + Vector Store**: Stores and retrieves semantic context
+- **Mechanism:** `PicklePersistence` from `python-telegram-bot`
+- **Location:** `data/bot_persistence.pickle` (configurable via `DATA_DIR` env var)
+- **Stores:** `user_data` per user (currently: `active_course` slug)
+- **Restart behaviour:** user's active course is restored on bot restart
+
+---
+
+## Planned Future Layers (not yet implemented)
+
+| Phase | Layer              | Description                                |
+|-------|--------------------|--------------------------------------------|
+| 4     | LLM Client         | Chat model integration, Q&A loop           |
+| 5     | Vision             | Image input → LLM                          |
+| 5     | Embeddings         | Embedding model + vector store             |
+| 6     | Retrieval (RAG)    | Document indexing, semantic search         |
+| 7     | Production         | Rate limiting, error recovery, deployment  |

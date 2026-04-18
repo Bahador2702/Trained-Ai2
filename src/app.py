@@ -30,7 +30,7 @@ def create_app() -> None:
     1. Set up logging.
     2. Print startup banner.
     3. Validate required configuration.
-    4. Build the Telegram Application.
+    4. Build the Telegram Application (with persistence).
     5. Start polling (blocking — runs until interrupted).
     """
     setup_logging(config.log_level)
@@ -40,13 +40,12 @@ def create_app() -> None:
     log.info("Environment: %s | Debug: %s", config.app_env, config.debug)
 
     for key, value in config.summary().items():
-        log.debug("  config.%-22s = %s", key, value)
+        log.debug("  config.%-24s = %s", key, value)
 
-    # Validate required secret — raises RuntimeError clearly if not set.
     token = config.require_telegram_token()
 
     log.info("Building Telegram application...")
-    application = build_application(token)
+    application = build_application(token, persistence_path=config.persistence_path)
 
     log.info("Starting polling. Press Ctrl+C to stop.")
     application.run_polling(drop_pending_updates=True)

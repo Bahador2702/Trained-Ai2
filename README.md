@@ -1,28 +1,34 @@
 # Trained-Ai2
 
-An AI-powered Telegram tutor bot built in phases, using modular architecture
-with LLM, vision, and embedding capabilities.
+An AI-powered Telegram tutor bot for Electrical Engineering subjects,
+built in phases using modular Python architecture.
 
 ## Project Status
 
-> **Phase 2 — Core Bot Shell** ✅
+> **Phase 3 — Stateful Bot Foundation** ✅
 
-The bot is now live and responds to basic commands via Telegram polling.
-LLM and tutor features are **not yet implemented** (Phase 3+).
-
-## Overview
-
-Trained-Ai2 is a multi-phase AI agent project designed to be deployed as a
-Telegram bot. Each phase adds functionality incrementally, following strict
-scaffolding and testing discipline.
+The bot now features an inline menu, persistent course selection, and
+session-aware responses.  LLM, tutor, and quiz features are **not yet
+implemented** (Phase 4+).
 
 ## Available Commands
 
 | Command | Description |
 |---------|-------------|
-| `/start` | Introduction and current development status |
+| `/start` | Greeting + open main menu (shows active course if selected) |
+| `/menu`  | Open main inline menu |
 | `/help`  | List available commands |
 | `/ping`  | Confirm the bot is online |
+
+## Inline Menu Actions
+
+| Button | Status | Notes |
+|--------|--------|-------|
+| 📚 انتخاب درس (Choose Course) | ✅ Active | Saves selection across restarts |
+| ❓ پرسیدن سوال (Ask Question) | ⏳ Placeholder | Phase 4 |
+| 📝 آزمون (Quiz) | ⏳ Placeholder | Phase 5+ |
+| 🔁 مرور (Review) | ⏳ Placeholder | Phase 5+ |
+| 📊 پیشرفت من (Progress) | 🔘 Minimal | Shows active course |
 
 ## Phases
 
@@ -62,12 +68,22 @@ Expected startup output:
 ╚══════════════════════════════════════════╝
 
 INFO  Trained-Ai2 v0.1.0 starting up.
+INFO  Environment: development | Debug: False
+INFO  Persistence: data/bot_persistence.pickle
 INFO  Building Telegram application...
-INFO  Registered handlers: /start, /help, /ping
+INFO  Registered handlers: /start, /menu, /help, /ping + CallbackQueryHandler
 INFO  Starting polling. Press Ctrl+C to stop.
 ```
 
-The bot will then be live on Telegram. Stop with `Ctrl+C`.
+The bot creates `data/bot_persistence.pickle` automatically on first run.
+Stop with `Ctrl+C`. User course selections are preserved across restarts.
+
+## Resetting User Sessions
+
+Delete the persistence file to clear all user state:
+```bash
+rm data/bot_persistence.pickle
+```
 
 ## License
 
