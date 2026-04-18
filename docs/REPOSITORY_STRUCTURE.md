@@ -2,20 +2,24 @@
 
 ```
 Trained-Ai2/
-├── README.md                  # Project overview
-├── PHASES.md                  # Phase roadmap
+├── README.md                  # Project overview and run instructions
+├── PHASES.md                  # Phase roadmap and status
 ├── .gitignore                 # Ignored files
-├── .env.example               # Environment variable template
+├── .env.example               # Environment variable template (all settings)
 ├── requirements.txt           # Python dependencies
 │
 ├── src/                       # Source code
 │   ├── __init__.py            # Package init
-│   ├── main.py                # Entry point (Phase 1+)
-│   ├── bot/                   # Telegram bot handlers (Phase 1+)
-│   ├── agent/                 # Agent core logic (Phase 2+)
-│   ├── llm/                   # LLM module (Phase 2+)
-│   ├── vision/                # Vision module (Phase 3+)
-│   └── memory/                # Memory + vector store (Phase 4+)
+│   ├── version.py             # Version string (Phase 1)
+│   ├── config.py              # Configuration loader (Phase 1)
+│   ├── logging_setup.py       # Logging initializer (Phase 1)
+│   ├── app.py                 # Application bootstrap (Phase 1)
+│   ├── main.py                # Executable entrypoint (Phase 1)
+│   ├── bot/                   # Telegram bot handlers (Phase 2+)
+│   ├── agent/                 # Agent core logic (Phase 3+)
+│   ├── llm/                   # LLM module (Phase 3+)
+│   ├── vision/                # Vision module (Phase 4+)
+│   └── memory/                # Memory + vector store (Phase 5+)
 │
 ├── docs/                      # Documentation
 │   ├── ARCHITECTURE.md
@@ -31,6 +35,7 @@ Trained-Ai2/
 
 ## Notes
 
-- `src/` subdirectories are created as phases progress
-- `tests/` mirrors `src/` structure
-- All secrets go in `.env` (never committed)
+- `src/` subdirectories (`bot/`, `agent/`, `llm/`, `vision/`, `memory/`) are
+  created as phases progress — do not create them prematurely.
+- `tests/` mirrors `src/` structure when tests are added.
+- All secrets go in `.env` (never committed — it is in `.gitignore`).

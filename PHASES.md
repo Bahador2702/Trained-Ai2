@@ -7,40 +7,50 @@ This document tracks the planned phases of the Trained-Ai2 project.
 ## Phase 0 — Repository Setup ✅
 - Initialize repository structure
 - Define scaffolding, docs, and architecture
-- No functional code yet
+- No functional code
 
 ---
 
-## Phase 1 — Core Bot Shell
-- Set up python-telegram-bot
-- Implement basic command handlers (/start, /help)
-- Environment variable loading
-- Logging setup
+## Phase 1 — Application Skeleton ✅
+- Minimal runnable Python project skeleton under `src/`
+- Configuration loading from `.env` via `python-dotenv`
+- Centralized logging setup
+- Application bootstrap (`src/app.py`) and entrypoint (`src/main.py`)
+- Startup banner and redacted config summary
+- Updated documentation to reflect executable state
 
 ---
 
-## Phase 2 — LLM Integration
+## Phase 2 — Core Bot Shell
+- Set up `python-telegram-bot`
+- Implement basic command handlers (`/start`, `/help`)
+- Wire Telegram bot into `src/app.py`
+- Basic error handling and graceful shutdown
+
+---
+
+## Phase 3 — LLM Integration
 - Connect chat model via API
 - Basic question-answer loop
 - Message history context window
 
 ---
 
-## Phase 3 — Vision & Embeddings
+## Phase 4 — Vision & Embeddings
 - Image input handling
 - Embedding model integration
 - Vector store setup
 
 ---
 
-## Phase 4 — Memory & Retrieval
+## Phase 5 — Memory & Retrieval
 - Persistent user memory
 - RAG (Retrieval-Augmented Generation) pipeline
 - Document ingestion
 
 ---
 
-## Phase 5 — Production Readiness
+## Phase 6 — Production Readiness
 - Error handling and fallbacks
 - Rate limiting
 - Deployment configuration

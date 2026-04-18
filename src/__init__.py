@@ -1,1 +1,1 @@
-# Trained-Ai2 scaffolding
+"""Trained-Ai2 — AI Telegram Tutor Bot."""
